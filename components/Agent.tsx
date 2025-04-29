@@ -15,7 +15,7 @@ function Agent({ userName }: AgentProps) {
   const [callStatus, setCallStatus] = React.useState<CallStatus>(
     CallStatus.INACTIVE
   );
-  const [messages, setMessages] = React.useState<SavedMessage[]>([]);
+  // const [messages, setMessages] = React.useState<SavedMessage[]>([]);
   const isSpeaking = true;
 
   return (
