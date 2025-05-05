@@ -1,7 +1,6 @@
 "use server";
 
-import { adminAuth, adminDb } from "@/firebase/admin";
-// import { auth, db } from "@/firebase/admin";
+import { auth, db } from "@/firebase/admin";
 import { cookies } from "next/headers";
 
 // Session duration (1 week)
@@ -12,7 +11,7 @@ export async function setSessionCookie(idToken: string) {
   const cookieStore = await cookies();
 
   // Create session cookie
-  const sessionCookie = await adminAuth.createSessionCookie(idToken, {
+  const sessionCookie = await auth.createSessionCookie(idToken, {
     expiresIn: SESSION_DURATION * 1000, // milliseconds
   });
 
@@ -31,7 +30,7 @@ export async function signUp(params: SignUpParams) {
 
   try {
     // check if user exists in db
-    const userRecord = await adminDb.collection("users").doc(uid).get();
+    const userRecord = await db.collection("users").doc(uid).get();
     if (userRecord.exists)
       return {
         success: false,
@@ -39,7 +38,7 @@ export async function signUp(params: SignUpParams) {
       };
 
     // save user to db
-    await adminDb.collection("users").doc(uid).set({
+    await db.collection("users").doc(uid).set({
       name,
       email,
       // profileURL,
@@ -72,7 +71,7 @@ export async function signIn(params: SignInParams) {
   const { email, idToken } = params;
 
   try {
-    const userRecord = await adminAuth.getUserByEmail(email);
+    const userRecord = await auth.getUserByEmail(email);
     if (!userRecord)
       return {
         success: false,
@@ -105,10 +104,10 @@ export async function getCurrentUser(): Promise<User | null> {
   if (!sessionCookie) return null;
 
   try {
-    const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie, true);
+    const decodedClaims = await auth.verifySessionCookie(sessionCookie, true);
 
     // get user info from db
-    const userRecord = await adminDb
+    const userRecord = await db
       .collection("users")
       .doc(decodedClaims.uid)
       .get();
@@ -131,3 +130,13 @@ export async function isAuthenticated() {
   const user = await getCurrentUser();
   return !!user;
 }
+
+
+export const signOutServerAction = async () => {
+  try {
+    (await cookies()).delete("session");
+    return { success: true, message: "Signed out successfully" };
+  } catch (error) {
+    return { success: false, message: "Error signing out" };
+  }
+};

@@ -1,20 +1,28 @@
 import dayjs from "dayjs";
 import Link from "next/link";
-import * as React from "react";
-import { Button } from "./ui/button";
 import Image from "next/image";
-import { cn, getRandomInterviewCover } from "@/lib/utils";
+
+import { Button } from "./ui/button";
 import DisplayTechIcons from "./DisplayTechIcons";
 
-function InterviewCard({
+import { cn, getRandomInterviewCover } from "@/lib/utils";
+import { getFeedbackByInterviewId } from "@/lib/action/general.action";
+
+const InterviewCard = async ({
   interviewId,
   userId,
   role,
   type,
   techstack,
   createdAt,
-}: InterviewCardProps) {
-  const feedback = null as Feedback | null;
+}: InterviewCardProps) => {
+  const feedback =
+    userId && interviewId
+      ? await getFeedbackByInterviewId({
+          interviewId,
+          userId,
+        })
+      : null;
 
   const normalizedType = /mix/gi.test(type) ? "Mixed" : type;
 
@@ -52,8 +60,10 @@ function InterviewCard({
             className="rounded-full object-fit size-[90px]"
           />
 
+          {/* Interview Role */}
           <h3 className="mt-5 capitalize">{role} Interview</h3>
 
+          {/* Date & Score */}
           <div className="flex flex-row gap-5 mt-3">
             <div className="flex flex-row gap-2">
               <Image
@@ -89,13 +99,13 @@ function InterviewCard({
                   : `/interview/${interviewId}`
               }
             >
-              {feedback ? "Check Feedback" : "View Interview"}
+              {feedback ? "Check Feedback" : "Take Interview"}
             </Link>
           </Button>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default InterviewCard;
