@@ -93,6 +93,7 @@ const InterviewCard = async ({
 
           <Button className="btn-primary">
             <Link
+              prefetch={true}
               href={
                 feedback
                   ? `/interview/${interviewId}/feedback`

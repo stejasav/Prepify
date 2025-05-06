@@ -168,7 +168,7 @@ const InterviewGenerator = ({ userId, userName }: GeneratePageProps) => {
           <div className="mt-10">
             <button
               type="submit"
-              className="w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-medium rounded-md transition-all duration-300 shadow-lg shadow-blue-900/30 flex items-center justify-center"
+              className="w-full py-3.5 cursor-pointer px-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-medium rounded-md transition-all duration-300 shadow-lg shadow-blue-900/30 flex items-center justify-center"
               disabled={isGenerating}
             >
               {isGenerating ? (

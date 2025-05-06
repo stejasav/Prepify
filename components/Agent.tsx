@@ -14,6 +14,7 @@ enum CallStatus {
   CONNECTING = "CONNECTING",
   ACTIVE = "ACTIVE",
   FINISHED = "FINISHED",
+  GENERATING_FEEDBACK = "GENERATING_FEEDBACK",
 }
 
 interface SavedMessage {
@@ -50,7 +51,12 @@ const Agent = ({
     };
 
     const onCallEnd = () => {
-      setCallStatus(CallStatus.FINISHED);
+      if (interviewId && userId) {
+        // Show feedback generation status immediately
+        setCallStatus(CallStatus.GENERATING_FEEDBACK);
+      } else {
+        setCallStatus(CallStatus.FINISHED);
+      }
     };
 
     const onMessage = (message: Message) => {
@@ -89,46 +95,57 @@ const Agent = ({
       vapi.off("speech-end", onSpeechEnd);
       vapi.off("error", onError);
     };
-  }, []);
+  }, [interviewId, userId]);
 
   useEffect(() => {
     if (messages.length > 0) {
       setLastMessage(messages[messages.length - 1].content);
     }
+  }, [messages]);
 
-    const handleGenerateFeedback = async (messages: SavedMessage[]) => {
-      if (!interviewId || !userId) {
-        console.log("Missing interviewId or userId, cannot generate feedback");
+  // Separate useEffect for handling feedback generation
+  useEffect(() => {
+    const handleGenerateFeedback = async () => {
+      if (
+        !interviewId ||
+        !userId ||
+        callStatus !== CallStatus.GENERATING_FEEDBACK
+      ) {
         return;
       }
 
-      console.log("handleGenerateFeedback");
+      console.log("Generating feedback...");
 
-      const { success, feedbackId: id } = await createFeedback({
-        interviewId: interviewId,
-        userId: userId,
-        transcript: messages,
-        feedbackId,
-      });
+      try {
+        // Pre-redirect to feedback page with loading state
+        // This happens before the actual feedback is generated
+        router.prefetch(`/interview/${interviewId}/feedback`);
 
-      if (success && id) {
-        router.push(`/interview/${interviewId}/feedback`);
-      } else {
-        console.log("Error saving feedback");
+        const { success, feedbackId: id } = await createFeedback({
+          interviewId: interviewId,
+          userId: userId,
+          transcript: messages,
+          feedbackId,
+        });
+
+        if (success && id) {
+          // Actually navigate to the feedback page
+          router.push(`/interview/${interviewId}/feedback`);
+        } else {
+          console.log("Error saving feedback");
+          router.push("/");
+        }
+      } catch (error) {
+        console.error("Error during feedback generation:", error);
         router.push("/");
       }
     };
 
-    if (callStatus === CallStatus.FINISHED) {
-      // Only generate feedback if we have interviewId and userId
-      if (interviewId && userId) {
-        handleGenerateFeedback(messages);
-      } else {
-        // If no interviewId or userId, just go back to home
-        router.push("/");
-      }
+    // Generate feedback when status changes to GENERATING_FEEDBACK
+    if (callStatus === CallStatus.GENERATING_FEEDBACK) {
+      handleGenerateFeedback();
     }
-  }, [messages, callStatus, feedbackId, interviewId, router, userId]);
+  }, [callStatus, messages, feedbackId, interviewId, router, userId]);
 
   const handleCall = async () => {
     setCallStatus(CallStatus.CONNECTING);
@@ -163,8 +180,8 @@ const Agent = ({
   };
 
   const handleDisconnect = () => {
-    setCallStatus(CallStatus.FINISHED);
     vapi.stop();
+    // The status will be set in the onCallEnd event handler
   };
 
   return (
@@ -217,8 +234,27 @@ const Agent = ({
       )}
 
       <div className="w-full flex justify-center">
-        {callStatus !== "ACTIVE" ? (
-          <button className="relative btn-call" onClick={() => handleCall()}>
+        {callStatus === CallStatus.ACTIVE ? (
+          <button className="btn-disconnect cursor-pointer" onClick={() => handleDisconnect()}>
+            End
+          </button>
+        ) : callStatus === CallStatus.GENERATING_FEEDBACK ? (
+          <div className="flex flex-col items-center gap-2">
+            <div className="animate-pulse text-primary-200">
+              Generating your feedback...
+            </div>
+            <div className="flex items-center justify-center">
+              <div className="h-2 w-2 bg-primary-200 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+              <div className="h-2 w-2 bg-primary-200 rounded-full animate-bounce [animation-delay:-0.15s] mx-1"></div>
+              <div className="h-2 w-2 bg-primary-200 rounded-full animate-bounce"></div>
+            </div>
+          </div>
+        ) : (
+          <button
+            className="relative btn-call"
+            onClick={() => handleCall()}
+            disabled={callStatus === CallStatus.CONNECTING}
+          >
             <span
               className={cn(
                 "absolute animate-ping rounded-full opacity-75",
@@ -231,10 +267,6 @@ const Agent = ({
                 ? "Call"
                 : ". . ."}
             </span>
-          </button>
-        ) : (
-          <button className="btn-disconnect" onClick={() => handleDisconnect()}>
-            End
           </button>
         )}
       </div>

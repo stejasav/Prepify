@@ -1,14 +1,23 @@
 import Link from "next/link";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 
 import { Button } from "@/components/ui/button";
-import InterviewCard from "@/components/InterviewCard";
 
 import { getCurrentUser } from "@/lib/action/auth.action";
 import {
   getInterviewsByUserId,
   getLatestInterviews,
 } from "@/lib/action/general.action";
+
+// Dynamic import the InterviewCard component
+// This will code-split it into a separate bundle that only loads when needed
+const InterviewCard = dynamic(() => import("@/components/InterviewCard"), {
+  // Show a simple loading placeholder while the component is being loaded
+  loading: () => (
+    <div className="bg-white rounded-lg shadow-md h-64 w-full animate-pulse" />
+  ),
+});
 
 async function Home() {
   const user = await getCurrentUser();
@@ -31,7 +40,9 @@ async function Home() {
           </p>
 
           <Button asChild className="btn-primary max-sm:w-full">
-            <Link href="/interview">Generate an Interview</Link>
+            <Link href="/interview" prefetch={true}>
+              Generate an Interview
+            </Link>
           </Button>
         </div>
 

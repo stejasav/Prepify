@@ -6,8 +6,16 @@ import DisplayTechIcons from "@/components/DisplayTechIcons";
 import Agent from "@/components/Agent";
 import { getCurrentUser } from "@/lib/action/auth.action";
 
+// Define the RouteParams type properly
+interface RouteParams {
+  params: {
+    id: string;
+  };
+}
+
 const Page = async ({ params }: RouteParams) => {
-  const { id } = await params;
+  // Now params is properly typed, so we can access id directly
+  const { id } = params;
   const user = await getCurrentUser();
   const interview = await getInterviewById(id);
 
@@ -40,11 +48,11 @@ const Page = async ({ params }: RouteParams) => {
         userName={user?.name || ""}
         userId={user?.id}
         interviewId={id}
-        // Pass the actual role instead of "interview" as the type
         type={interview.role}
         questions={interview.questions}
       />
     </>
   );
 };
+
 export default Page;
