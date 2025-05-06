@@ -101,7 +101,7 @@ export const interviewer: CreateAssistantDTO = {
   name: "Interviewer",
   // Updated firstMessage to conduct an interview instead of creating one
   firstMessage:
-    "Hello {{username}}! I'm your interviewer today for the {{role}} position. Let's begin the interview process.",
+    "Hello {{username}}! I'm your interviewer today for the {{role}} position. Let's begin the interview process. Are you ready?",
   transcriber: {
     provider: "deepgram",
     model: "nova-2",
