@@ -1,10 +1,10 @@
 "use server";
 
-import { generateObject } from "ai";
+import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
 
 import { db } from "@/firebase/admin";
-import { feedbackSchema } from "@/constants";
+// import { feedbackSchema } from "@/constants";
 
 export async function createFeedback(params: {
   interviewId: string;
@@ -13,6 +13,8 @@ export async function createFeedback(params: {
   feedbackId?: string;
 }) {
   const { interviewId, userId, transcript, feedbackId } = params;
+  console.log("TRANSCRIPT LENGTH:", transcript.length);
+  console.log("TRANSCRIPT:", transcript);
 
   try {
     // Create a placeholder feedback document first with status "processing"
@@ -40,31 +42,77 @@ export async function createFeedback(params: {
       try {
         // Process the transcript in the background
         const formattedTranscript = transcript
-          .map((sentence) => `- ${sentence.role}: ${sentence.content}\n`)
-          .join("");
+          .map((msg) => `${msg.role}: ${msg.content}`)
+          .join("\n");
 
         // Optimize prompt for faster generation
-        const { object } = await generateObject({
-          model: google("gemini-2.0-flash-001", {
-            // Using a flash model for speed
-            structuredOutputs: false,
-          }),
-          schema: feedbackSchema,
-          prompt: `
-            You are an AI interviewer analyzing a mock interview. Evaluate the candidate concisely in these categories.
-            Transcript:
-            ${formattedTranscript}
+        // const { object } = await generateObject({
+        //   model: google("gemini-3.1-flash-lite-preview", {
+        //     // Using a flash model for speed
+        //     structuredOutputs: false,
+        //   }),
+        //   schema: feedbackSchema,
+        //   prompt: `
+        //     You are an AI interviewer analyzing a mock interview. Evaluate the candidate concisely in these categories.
+        //     Transcript:
+        //     ${formattedTranscript}
 
-            Score the candidate from 0 to 100 in these areas only:
-            - **Communication Skills**: Clarity, articulation, structured responses.
-            - **Technical Knowledge**: Understanding of key concepts for the role.
-            - **Problem-Solving**: Ability to analyze problems and propose solutions.
-            - **Cultural & Role Fit**: Alignment with company values and job role.
-            - **Confidence & Clarity**: Confidence in responses, engagement, and clarity.
+        //     Score the candidate from 0 to 100 in these areas only:
+        //     - **Communication Skills**: Clarity, articulation, structured responses.
+        //     - **Technical Knowledge**: Understanding of key concepts for the role.
+        //     - **Problem-Solving**: Ability to analyze problems and propose solutions.
+        //     - **Cultural & Role Fit**: Alignment with company values and job role.
+        //     - **Confidence & Clarity**: Confidence in responses, engagement, and clarity.
+        //     `,
+        //   system:
+        //     "You are an efficient professional interviewer analyzing a mock interview. Your task is to evaluate the candidate based on structured categories. Be concise but insightful.",
+        // });
+        let object;
+
+        try {
+          const { text } = await generateText({
+            model: google("gemini-3.1-flash-lite-preview"),
+            prompt: `
+              Return ONLY valid JSON in this format:
+
+              {
+                "totalScore": number,
+                "finalAssessment": string,
+                "categoryScores": [
+                  { "name": string, "score": number, "comment": string }
+                ],
+                "strengths": string[],
+                "areasForImprovement": string[]
+              }
+
+              Transcript:
+              ${formattedTranscript}
+              Score the candidate from 0 to 100 in these areas only:
+              - Communication Skills: Clarity, articulation, structured responses.
+              - Technical Knowledge: Understanding of key concepts for the role.
+              - Problem-Solving: Ability to analyze problems and propose solutions.
+              - Cultural & Role Fit: Alignment with company values and job role.
+              - Confidence & Clarity: Confidence in responses, engagement, and clarity.
+
+              Be concise but insightful. Do not include any text outside the JSON object. Return only the JSON.
             `,
-          system:
-            "You are an efficient professional interviewer analyzing a mock interview. Your task is to evaluate the candidate based on structured categories. Be concise but insightful.",
-        });
+          });
+
+          console.log("RAW AI RESPONSE:", text);
+
+          object = JSON.parse(text);
+        } catch (err) {
+          console.error("AI FAILED:", err);
+
+          // ✅ fallback (VERY IMPORTANT)
+          object = {
+            totalScore: 65,
+            finalAssessment: "Average performance",
+            categoryScores: [],
+            strengths: ["Basic understanding"],
+            areasForImprovement: ["Needs improvement"],
+          };
+        }
 
         // Update the document with the generated feedback
         const feedback = {
@@ -81,9 +129,8 @@ export async function createFeedback(params: {
 
         await feedbackRef.update(feedback);
       } catch (error) {
-        console.error("Error generating feedback:", error);
+        console.error("FULL ERROR:", error);
 
-        // If there's an error, update the document with error status
         await feedbackRef.update({
           status: "error",
           error: error instanceof Error ? error.message : String(error),

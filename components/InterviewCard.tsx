@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Button } from "./ui/button";
 import DisplayTechIcons from "./DisplayTechIcons";
 
-import { cn, getRandomInterviewCover } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { getFeedbackByInterviewId } from "@/lib/action/general.action";
 
 const InterviewCard = async ({
@@ -38,7 +38,7 @@ const InterviewCard = async ({
   ).format("MMM D, YYYY");
 
   return (
-    <div className="card-border w-[360px] max-sm:w-full min-h-96">
+    <div className="card-border w-[360px] max-sm:w-full min-h-80">
       <div className="card-interview">
         <div>
           {/* Type Badge */}
@@ -50,15 +50,6 @@ const InterviewCard = async ({
           >
             <p className="badge-text ">{normalizedType}</p>
           </div>
-
-          {/* Cover Image */}
-          <Image
-            src={getRandomInterviewCover()}
-            alt="cover-image"
-            width={90}
-            height={90}
-            className="rounded-full object-fit size-[90px]"
-          />
 
           {/* Interview Role */}
           <h3 className="mt-5 capitalize">{role} Interview</h3>

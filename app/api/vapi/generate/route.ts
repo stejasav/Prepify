@@ -1,6 +1,5 @@
 import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
-import { getRandomInterviewCover } from "@/lib/utils";
 import { db } from "@/firebase/admin";
 import { NextResponse } from "next/server";
 
@@ -12,7 +11,6 @@ const logDebug = (...args: any[]) => {
 
 export async function GET() {
   try {
-    // Simple health check endpoint
     logDebug("GET /api/vapi/generate - Health check");
 
     // Test Firebase connection
@@ -86,7 +84,7 @@ export async function POST(request: Request) {
     `;
 
     const { text: rawResponse } = await generateText({
-      model: google("gemini-2.0-flash-001"),
+      model: google("gemini-3.1-flash-lite-preview"),
       prompt,
     });
 
@@ -161,7 +159,6 @@ export async function POST(request: Request) {
       questions,
       userId: userid,
       finalized: true,
-      coverImage: getRandomInterviewCover(),
       createdAt: new Date().toISOString(),
     };
 
