@@ -32,27 +32,54 @@ async function Home() {
 
   return (
     <>
-      <section className="card-cta">
-        <div className="flex flex-col gap-6 max-w-lg">
-          <h2>Get Interview-Ready with AI-Powered Practice & Feedback</h2>
-          <p className="text-lg">
-            Practice real interview questions & get instant feedback
+      <section
+        className="relative flex flex-col md:flex-row items-center justify-between gap-10 p-10 rounded-[32px] overflow-hidden"
+        style={{
+          background: 'rgba(255,255,255,0.06)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          boxShadow: '0 30px 80px rgba(0,0,0,0.4)'
+        }}
+      >
+
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-20 -left-20 w-[300px] h-[300px] bg-blue-500/20 blur-[120px] rounded-full" />
+          <div className="absolute -bottom-20 -right-20 w-[300px] h-[300px] bg-indigo-500/20 blur-[120px] rounded-full" />
+        </div>
+
+        {/* CONTENT */}
+        <div className="relative z-10 flex flex-col gap-6 max-w-lg">
+
+          <h2 className="text-3xl md:text-4xl font-black text-white leading-tight tracking-tight">
+            Get Interview-Ready with AI-Powered Practice & Feedback
+          </h2>
+
+          <p className="text-white/70 text-base md:text-lg leading-relaxed">
+            Practice real interview questions and get instant, intelligent feedback to improve faster.
           </p>
 
-          <Button asChild className="btn-primary max-sm:w-full">
-            <Link href="/interview" prefetch={true}>
-              Generate an Interview
+          <Button
+            asChild
+            className="w-fit px-6 py-5 text-white rounded-xl font-semibold text-md bg-blue-600 hover:bg-[#000926] transition-all "
+          >
+            <Link href="/interview" prefetch>
+              Generate an Interview {" "} <span> →</span>
             </Link>
           </Button>
         </div>
 
-        <Image
-          src="/robot.png"
-          alt="robo-dude"
-          width={400}
-          height={400}
-          className="max-sm:hidden"
-        />
+        {/* IMAGE */}
+        <div className="relative z-10">
+          <Image
+            src="/robot.png"
+            alt="robo-dude"
+            width={380}
+            height={380}
+            className="max-sm:hidden drop-shadow-[0_20px_40px_rgba(0,0,0,0.6)]"
+          />
+        </div>
+
       </section>
 
       <section className="flex flex-col gap-6 mt-8">

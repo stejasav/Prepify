@@ -65,150 +65,153 @@ const InterviewGenerator = ({ userId, userName }: GeneratePageProps) => {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto">
-      {/* Card container with subtle gradient */}
-      <div className="bg-gradient-to-b from-gray-900 to-gray-800 rounded-xl border border-gray-700 shadow-xl p-6 md:p-8">
+  <div className="w-full max-w-3xl mx-auto">
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="space-y-2">
-            <label className="flex items-center text-gray-300 mb-1">
-              <span className="h-2 w-2 bg-blue-500 rounded-full mr-2"></span>
-              Interview Type
-            </label>
-            <select
-              name="type"
-              value={interviewSpec.type}
-              onChange={handleInputChange}
-              className="w-full p-3 bg-gray-800/70 border border-gray-700 rounded-md text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-400 transition-all"
-              required
-            >
-              <option value="" disabled>
-                Select interview type
-              </option>
-              <option value="technical">Technical</option>
-              <option value="behavioral">Behavioral</option>
-              <option value="mixed">Mixed</option>
-            </select>
-          </div>
+    {/* GLASS CARD */}
+    <div
+      className="relative rounded-[28px] p-6 md:p-8 overflow-hidden"
+      style={{
+        background: 'rgba(255,255,255,0.05)',
+        backdropFilter: 'blur(40px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(40px)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: '0 30px 80px rgba(0,0,0,0.4)'
+      }}
+    >
 
-          <div className="space-y-2">
-            <label className="flex items-center text-gray-300 mb-1">
-              <span className="h-2 w-2 bg-blue-500 rounded-full mr-2"></span>
-              Role
-            </label>
-            <input
-              type="text"
-              name="role"
-              value={interviewSpec.role}
-              onChange={handleInputChange}
-              className="w-full p-3 bg-gray-800/70 border border-gray-700 rounded-md text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-400 transition-all"
-              placeholder="e.g., Software Engineer"
-              required
-            />
-          </div>
+      <div className="absolute -top-16 -right-16 w-[200px] h-[200px] bg-blue-500/20 blur-[100px] rounded-full" />
 
-          <div className="space-y-2">
-            <label className="flex items-center text-gray-300 mb-1">
-              <span className="h-2 w-2 bg-blue-500 rounded-full mr-2"></span>
-              Experience Level
-            </label>
-            <select
-              name="level"
-              value={interviewSpec.level}
-              onChange={handleInputChange}
-              className="w-full p-3 bg-gray-800/70 border border-gray-700 rounded-md text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-400 transition-all"
-              required
-            >
-              <option value="" disabled>
-                Select experience level
-              </option>
-              <option value="Internship">Internship</option>
-              <option value="Entry-level">Entry-level</option>
-              <option value="Junior">Junior</option>
-              <option value="Mid-level">Mid-level</option>
-              <option value="Senior">Senior</option>
-              <option value="Lead">Lead</option>
-            </select>
-          </div>
+      <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
 
-          <div className="space-y-2">
-            <label className="flex items-center text-gray-300 mb-1">
-              <span className="h-2 w-2 bg-blue-500 rounded-full mr-2"></span>
-              Tech Stack (comma separated)
-            </label>
-            <input
-              type="text"
-              name="techstack"
-              value={interviewSpec.techstack}
-              onChange={handleInputChange}
-              className="w-full p-3 bg-gray-800/70 border border-gray-700 rounded-md text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-400 transition-all"
-              placeholder="e.g., JavaScript, React, Node.js"
-              required
-            />
-          </div>
+        {/* Interview Type */}
+        <div className="space-y-2">
+          <label className="flex items-center text-white/70 mb-1 text-sm font-medium">
+            Interview Type
+          </label>
+          <select
+            name="type"
+            value={interviewSpec.type}
+            onChange={handleInputChange}
+            className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white 
+                       focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 outline-none transition-all"
+            required
+          >
+            <option value="" disabled className="bg-[#0b0f1a]">Select interview type</option>
+            <option value="technical" className="bg-[#0b0f1a]">Technical</option>
+            <option value="behavioral" className="bg-[#0b0f1a]">Behavioral</option>
+            <option value="mixed" className="bg-[#0b0f1a]">Mixed</option>
+          </select>
+        </div>
 
-          <div className="space-y-2">
-            <label className="flex items-center text-gray-300 mb-1">
-              <span className="h-2 w-2 bg-blue-500 rounded-full mr-2"></span>
-              Number of Questions
-            </label>
-            <input
-              type="number"
-              name="amount"
-              value={interviewSpec.amount}
-              onChange={handleInputChange}
-              min="3"
-              max="30"
-              className="w-full p-3 bg-gray-800/70 border border-gray-700 rounded-md text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-400 transition-all"
-              placeholder="e.g., 5"
-              required
-            />
-          </div>
+        {/* Role */}
+        <div className="space-y-2">
+          <label className="flex items-center text-white/70 mb-1 text-sm font-medium">
+            
+            Role
+          </label>
+          <input
+            type="text"
+            name="role"
+            value={interviewSpec.role}
+            onChange={handleInputChange}
+            className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white 
+                       placeholder:text-white/30 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 outline-none transition-all"
+            placeholder="e.g., Software Engineer"
+            required
+          />
+        </div>
 
-          <div className="mt-10">
-            <button
-              type="submit"
-              className="w-full py-3.5 cursor-pointer px-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-medium rounded-md transition-all duration-300 shadow-lg shadow-blue-900/30 flex items-center justify-center"
-              disabled={isGenerating}
-            >
-              {isGenerating ? (
-                <>
-                  <svg
-                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Generating...
-                </>
-              ) : (
-                "Generate Interview"
-              )}
-            </button>
-          </div>
-        </form>
-      </div>
+        {/* Experience */}
+        <div className="space-y-2">
+          <label className="flex items-center text-white/70 mb-1 text-sm font-medium">
+            Experience Level
+          </label>
+          <select
+            name="level"
+            value={interviewSpec.level}
+            onChange={handleInputChange}
+            className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white 
+                       focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 outline-none transition-all"
+            required
+          >
+            <option value="" disabled className="bg-[#0b0f1a]">Select experience level</option>
+            <option className="bg-[#0b0f1a]">Internship</option>
+            <option className="bg-[#0b0f1a]">Entry-level</option>
+            <option className="bg-[#0b0f1a]">Junior</option>
+            <option className="bg-[#0b0f1a]">Mid-level</option>
+            <option className="bg-[#0b0f1a]">Senior</option>
+            <option className="bg-[#0b0f1a]">Lead</option>
+          </select>
+        </div>
 
-      {/* Additional info text */}
-      <div className="text-center text-gray-500 text-sm mt-4">
-        Your interview questions will be generated based on these specifications
-      </div>
+        {/* Tech stack */}
+        <div className="space-y-2">
+          <label className="flex items-center text-white/70 mb-1 text-sm font-medium">
+            Tech Stack (comma separated)
+          </label>
+          <input
+            type="text"
+            name="techstack"
+            value={interviewSpec.techstack}
+            onChange={handleInputChange}
+            className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white 
+                       placeholder:text-white/30 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 outline-none transition-all"
+            placeholder="e.g., JavaScript, React, Node.js"
+            required
+          />
+        </div>
+
+        {/* Questions */}
+        <div className="space-y-2">
+          <label className="flex items-center text-white/70 mb-1 text-sm font-medium">
+            Number of Questions
+          </label>
+          <input
+            type="number"
+            name="amount"
+            value={interviewSpec.amount}
+            onChange={handleInputChange}
+            min="3"
+            max="30"
+            className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white 
+                       placeholder:text-white/30 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 outline-none transition-all"
+            placeholder="e.g., 5"
+            required
+          />
+        </div>
+
+        {/* BUTTON */}
+        <div className="mt-10">
+          <button
+            type="submit"
+            disabled={isGenerating}
+            className="w-full py-3.5 px-4 rounded-xl font-medium text-white transition-all flex items-center justify-center gap-2"
+            style={{
+              background: 'linear-gradient(135deg, #0F52BA, #3B82F6)',
+              boxShadow: '0 15px 40px rgba(15,82,186,0.4)'
+            }}
+          >
+            {isGenerating ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Generating...
+              </>
+            ) : (
+              "Generate Interview"
+            )}
+          </button>
+        </div>
+
+      </form>
     </div>
-  );
+
+    {/* FOOTER TEXT */}
+    <div className="text-center text-white/40 text-sm mt-4">
+      Your interview questions will be generated based on these specifications
+    </div>
+
+  </div>
+);
 };
 
 export default InterviewGenerator;

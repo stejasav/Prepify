@@ -20,21 +20,46 @@ const Page = async ({ params }: RouteParams) => {
   if (!interview) redirect("/");
 
   return (
-    <>
-      <div className="flex flex-row gap-4 justify-between">
-        <div className="flex flex-row gap-4 items-center max-sm:flex-col">
-          <div className="flex flex-row gap-4 items-center">
-            <h3 className="capitalize">{interview.role} Interview</h3>
-          </div>
+  <div className="relative px-4 md:px-8 py-6">
+
+    {/* 🔥 Glow Background */}
+    <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute top-[-120px] left-[-120px] w-[300px] h-[300px] bg-blue-500/20 blur-[120px] rounded-full" />
+      <div className="absolute bottom-[-120px] right-[-120px] w-[300px] h-[300px] bg-indigo-500/20 blur-[120px] rounded-full" />
+    </div>
+
+    <div className="relative z-10 space-y-6">
+
+      {/* HEADER */}
+      <div
+        className="flex flex-col md:flex-row items-center justify-between gap-4 p-5 rounded-2xl"
+        style={{
+          background: 'rgba(255,255,255,0.05)',
+          backdropFilter: 'blur(30px)',
+          border: '1px solid rgba(255,255,255,0.08)'
+        }}
+      >
+        <div className="flex items-center gap-4 flex-wrap">
+          <h2 className="text-xl md:text-2xl font-bold text-white capitalize">
+            {interview.role} Interview
+          </h2>
 
           <DisplayTechIcons techStack={interview.techstack} />
         </div>
 
-        <p className="bg-dark-200 px-4 py-2 rounded-lg h-fit capitalize">
+        <span
+          className="px-4 py-1.5 rounded-full text-xs font-semibold"
+          style={{
+            background: 'rgba(255,255,255,0.1)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            color: '#60A5FA'
+          }}
+        >
           {interview.type}
-        </p>
+        </span>
       </div>
 
+      {/* AGENT */}
       <Agent
         userName={user?.name || ""}
         userId={user?.id}
@@ -42,8 +67,10 @@ const Page = async ({ params }: RouteParams) => {
         type={interview.role}
         questions={interview.questions}
       />
-    </>
-  );
+
+    </div>
+  </div>
+);
 };
 
 export default Page;

@@ -185,93 +185,138 @@ const Agent = ({
   };
 
   return (
-    <>
-      <div className="call-view">
-        {/* AI Interviewer Card */}
-        <div className="card-interviewer">
-          <div className="avatar">
-            <Image
-              src="/ai-avatar.png"
-              alt="profile-image"
-              width={65}
-              height={54}
-              className="object-cover"
-            />
-            {isSpeaking && <span className="animate-speak" />}
-          </div>
-          <h3>AI Interviewer</h3>
+  <>
+    <div className="call-view flex flex-col md:flex-row justify-center gap-10">
+      <div
+        className="card-interviewer flex flex-col items-center gap-4 p-6 rounded-[28px]"
+        style={{
+          background: 'rgba(255,255,255,0.05)',
+          backdropFilter: 'blur(40px)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.4)'
+        }}
+      >
+        <div className="avatar relative">
+          <Image
+            src="/ai-avatar.png"
+            alt="profile-image"
+            width={70}
+            height={70}
+            className="object-cover rounded-full"
+          />
+          {isSpeaking && (
+            <span className="absolute inset-0 rounded-full border-2 border-blue-400 animate-ping" />
+          )}
         </div>
-
-        {/* User Profile Card */}
-        <div className="card-border">
-          <div className="card-content">
-            <Image
-              src="/user-avatar.png"
-              alt="profile-image"
-              width={539}
-              height={539}
-              className="rounded-full object-cover size-[120px]"
-            />
-            <h3>{userName}</h3>
-          </div>
-        </div>
+        <h3 className="text-white font-semibold text-sm tracking-wide">
+          AI Interviewer
+        </h3>
       </div>
 
-      {messages.length > 0 && (
-        <div className="transcript-border">
-          <div className="transcript">
-            <p
-              key={lastMessage}
-              className={cn(
-                "transition-opacity duration-500 opacity-0",
-                "animate-fadeIn opacity-100"
-              )}
-            >
-              {lastMessage}
-            </p>
-          </div>
+      <div
+        className="card-border flex flex-col items-center gap-4 p-6 rounded-[28px]"
+        style={{
+          background: 'rgba(255,255,255,0.05)',
+          backdropFilter: 'blur(40px)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.4)'
+        }}
+      >
+        <div className="card-content flex flex-col items-center gap-3">
+          <Image
+            src="/user-avatar.png"
+            alt="profile-image"
+            width={120}
+            height={120}
+            className="rounded-full object-cover"
+          />
+          <h3 className="text-white font-semibold text-sm tracking-wide">
+            {userName}
+          </h3>
         </div>
-      )}
+      </div>
+    </div>
 
-      <div className="w-full flex justify-center">
-        {callStatus === CallStatus.ACTIVE ? (
-          <button className="btn-disconnect cursor-pointer" onClick={() => handleDisconnect()}>
-            End
-          </button>
-        ) : callStatus === CallStatus.GENERATING_FEEDBACK ? (
-          <div className="flex flex-col items-center gap-2">
-            <div className="animate-pulse text-primary-200">
-              Generating your feedback...
-            </div>
-            <div className="flex items-center justify-center">
-              <div className="h-2 w-2 bg-primary-200 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-              <div className="h-2 w-2 bg-primary-200 rounded-full animate-bounce [animation-delay:-0.15s] mx-1"></div>
-              <div className="h-2 w-2 bg-primary-200 rounded-full animate-bounce"></div>
-            </div>
-          </div>
-        ) : (
-          <button
-            className="relative btn-call"
-            onClick={() => handleCall()}
-            disabled={callStatus === CallStatus.CONNECTING}
+    {messages.length > 0 && (
+      <div
+        className="transcript-border mt-6 p-5 rounded-2xl text-center"
+        style={{
+          background: 'rgba(255,255,255,0.04)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.08)'
+        }}
+      >
+        <div className="transcript">
+          <p
+            key={lastMessage}
+            className={cn(
+              "transition-opacity duration-500 opacity-0",
+              "animate-fadeIn opacity-100 text-white/70 text-sm leading-relaxed"
+            )}
           >
-            <span
-              className={cn(
-                "absolute animate-ping rounded-full opacity-75",
-                callStatus !== "CONNECTING" && "hidden"
-              )}
-            />
-
-            <span className="relative">
-              {callStatus === "INACTIVE" || callStatus === "FINISHED"
-                ? "Call"
-                : ". . ."}
-            </span>
-          </button>
-        )}
+            {lastMessage}
+          </p>
+        </div>
       </div>
-    </>
-  );
+    )}
+
+    {/* ================= BUTTON ================= */}
+    <div className="w-full flex justify-center mt-8">
+
+      {callStatus === CallStatus.ACTIVE ? (
+        <button
+          className="btn-disconnect cursor-pointer px-8 py-3 rounded-xl text-white font-semibold transition-all"
+          style={{
+            background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+            boxShadow: '0 10px 30px rgba(239,68,68,0.4)'
+          }}
+          onClick={() => handleDisconnect()}
+        >
+          End Interview
+        </button>
+
+      ) : callStatus === CallStatus.GENERATING_FEEDBACK ? (
+
+        <div className="flex flex-col items-center gap-3 text-white/70">
+          <div className="animate-pulse font-medium">
+            Generating your feedback...
+          </div>
+
+          <div className="flex items-center justify-center">
+            <div className="h-2 w-2 bg-blue-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+            <div className="h-2 w-2 bg-blue-400 rounded-full animate-bounce [animation-delay:-0.15s] mx-1" />
+            <div className="h-2 w-2 bg-blue-400 rounded-full animate-bounce" />
+          </div>
+        </div>
+
+      ) : (
+        <button
+          className="relative btn-call px-10 py-4 rounded-xl text-white font-semibold transition-all"
+          style={{
+            background: 'linear-gradient(135deg, #0F52BA, #3B82F6)',
+            boxShadow: '0 20px 40px rgba(15,82,186,0.4)'
+          }}
+          onClick={() => handleCall()}
+          disabled={callStatus === CallStatus.CONNECTING}
+        >
+          {/* 🔥 connecting pulse */}
+          <span
+            className={cn(
+              "absolute inset-0 rounded-xl animate-ping opacity-30 bg-blue-400",
+              callStatus !== "CONNECTING" && "hidden"
+            )}
+          />
+
+          <span className="relative">
+            {callStatus === "INACTIVE" || callStatus === "FINISHED"
+              ? "Start Interview"
+              : "Connecting..."}
+          </span>
+        </button>
+      )}
+    </div>
+  </>
+);
 };
 
 export default Agent;

@@ -122,90 +122,153 @@ const FeedbackContent = async ({
     }
 
     return (
-      <>
-        <div className="flex flex-row justify-center">
-          <h1 className="text-4xl font-semibold">
-            Feedback on the Interview -{" "}
-            <span className="capitalize">{interview.role}</span> Interview
+      <div className="space-y-8">
+
+        {/* ================= HEADER ================= */}
+        <div
+          className="text-center p-8 rounded-[32px]"
+          style={{
+            background: 'rgba(255,255,255,0.05)',
+            backdropFilter: 'blur(40px)',
+            border: '1px solid rgba(255,255,255,0.08)'
+          }}
+        >
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
+            Interview Feedback
           </h1>
-        </div>
 
-        <div className="flex flex-row justify-center">
-          <div className="flex flex-row gap-5">
-            <div className="flex flex-row gap-2 items-center">
-              <Image src="/star.svg" width={22} height={22} alt="star" />
-              <p>
-                Overall Impression:{" "}
-                <span className="text-primary-200 font-bold">
-                  {feedback.totalScore}
+          <p className="text-white/60 text-sm">
+            {interview.role} Interview Analysis
+          </p>
+
+          {/* SCORE */}
+          <div className="mt-6 flex justify-center items-center gap-6 flex-wrap">
+
+            <div className="flex items-center gap-2 text-white/80">
+              <Image src="/star.svg" width={20} height={20} alt="star" />
+              <span className="text-sm">
+                Score:
+                <span className="text-blue-400 font-bold ml-1">
+                  {feedback.totalScore}/100
                 </span>
-                /100
-              </p>
+              </span>
             </div>
 
-            <div className="flex flex-row gap-2">
-              <Image
-                src="/calendar.svg"
-                width={22}
-                height={22}
-                alt="calendar"
-              />
-              <p>
-                {feedback.createdAt
-                  ? dayjs(feedback.createdAt).format("MMM D, YYYY h:mm A")
-                  : "N/A"}
-              </p>
+            <div className="flex items-center gap-2 text-white/60 text-sm">
+              <Image src="/calendar.svg" width={18} height={18} alt="calendar" />
+              {feedback.createdAt
+                ? dayjs(feedback.createdAt).format("MMM D, YYYY")
+                : "N/A"}
             </div>
+
           </div>
         </div>
 
-        <hr />
+        {/* ================= FINAL ASSESSMENT ================= */}
+        <div
+          className="p-6 rounded-2xl text-white/80"
+          style={{
+            background: 'rgba(255,255,255,0.04)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255,255,255,0.08)'
+          }}
+        >
+          <p className="leading-relaxed">
+            {feedback.finalAssessment}
+          </p>
+        </div>
 
-        <p>{feedback.finalAssessment}</p>
+        {/* ================= BREAKDOWN ================= */}
+        <div className="space-y-4">
+          <h2 className="text-white font-semibold text-lg">
+            Breakdown
+          </h2>
 
-        <div className="flex flex-col gap-4">
-          <h2>Breakdown of the Interview:</h2>
           {feedback.categoryScores?.map((category, index) => (
-            <div key={index}>
-              <p className="font-bold">
-                {index + 1}. {category.name} ({category.score}/100)
+            <div
+              key={index}
+              className="p-5 rounded-2xl"
+              style={{
+                background: 'rgba(255,255,255,0.05)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255,255,255,0.08)'
+              }}
+            >
+              <div className="flex justify-between items-center mb-2">
+                <p className="text-white font-semibold text-sm">
+                  {index + 1}. {category.name}
+                </p>
+                <span className="text-blue-400 font-bold text-sm">
+                  {category.score}/100
+                </span>
+              </div>
+
+              <p className="text-white/60 text-sm leading-relaxed">
+                {category.comment}
               </p>
-              <p>{category.comment}</p>
             </div>
           ))}
         </div>
 
-        <div className="flex flex-col gap-3">
-          <h3>Strengths</h3>
-          <ul className="list-disc pl-5">
-            {feedback.strengths?.map((strength, index) => (
-              <li key={index}>{strength}</li>
+        {/* ================= STRENGTHS ================= */}
+        {feedback.strengths?.length > 0 ? (
+          <div
+          className="p-6 rounded-2xl"
+          style={{
+            background: 'rgba(34,197,94,0.08)',
+            border: '1px solid rgba(34,197,94,0.2)'
+          }}
+        >
+          <h3 className="text-green-400 font-semibold mb-3">
+            Strengths
+          </h3>
+
+          <ul className="space-y-2 text-white/80 text-sm">
+            {feedback.strengths?.map((s, i) => (
+              <li key={i}>• {s}</li>
+            ))}
+          </ul>
+        </div>
+        ):null}
+
+        {/* ================= IMPROVEMENTS ================= */}
+        <div
+          className="p-6 rounded-2xl"
+          style={{
+            background: 'rgba(239,68,68,0.08)',
+            border: '1px solid rgba(239,68,68,0.2)'
+          }}
+        >
+          <h3 className="text-red-400 font-semibold mb-3">
+            Areas to Improve
+          </h3>
+
+          <ul className="space-y-2 text-white/80 text-sm">
+            {feedback.areasForImprovement?.map((a, i) => (
+              <li key={i}>• {a}</li>
             ))}
           </ul>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <h3>Areas for Improvement</h3>
-          <ul className="list-disc pl-5">
-            {feedback.areasForImprovement?.map((area, index) => (
-              <li key={index}>{area}</li>
-            ))}
-          </ul>
-        </div>
+        {/* ================= ACTION BUTTONS ================= */}
+        <div className="flex gap-4 pt-4">
 
-        <div className="flex gap-4 mt-8">
-          <Button asChild variant="secondary" className="flex-1">
-            <Link href="/" prefetch={true}>
-              Back to dashboard
+          <Button asChild className="flex-1 bg-white/10 hover:bg-white/20 text-white">
+            <Link href="/" prefetch>
+              Back to Dashboard
             </Link>
           </Button>
-          <Button asChild className="flex-1">
-            <Link href={`/interview/${interviewId}`} prefetch={true}>
+
+          <Button
+            asChild
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
+          >
+            <Link href={`/interview/${interviewId}`} prefetch>
               Retake Interview
             </Link>
           </Button>
         </div>
-      </>
+      </div>
     );
   } catch (error) {
     console.error("Error loading feedback:", error);
