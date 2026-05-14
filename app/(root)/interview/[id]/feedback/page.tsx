@@ -29,9 +29,9 @@ interface FeedbackData {
 }
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 const FeedbackLoading = () => (
@@ -283,7 +283,7 @@ const FeedbackContent = async ({
 };
 
 export default async function FeedbackPage({ params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   const user = await getCurrentUser();
 
   if (!user?.id) redirect("/");

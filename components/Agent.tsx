@@ -202,7 +202,7 @@ const Agent = ({
             alt="profile-image"
             width={70}
             height={70}
-            className="object-cover rounded-full"
+            className="w-auto h-auto object-cover rounded-full"
           />
           {isSpeaking && (
             <span className="absolute inset-0 rounded-full border-2 border-blue-400 animate-ping" />
@@ -228,7 +228,7 @@ const Agent = ({
             alt="profile-image"
             width={120}
             height={120}
-            className="rounded-full object-cover"
+            className="w-auto h-auto rounded-full object-cover"
           />
           <h3 className="text-white font-semibold text-sm tracking-wide">
             {userName}

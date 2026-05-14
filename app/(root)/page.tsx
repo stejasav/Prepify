@@ -76,7 +76,7 @@ async function Home() {
             alt="robo-dude"
             width={380}
             height={380}
-            className="max-sm:hidden drop-shadow-[0_20px_40px_rgba(0,0,0,0.6)]"
+            className="w-auto h-auto max-sm:hidden drop-shadow-[0_20px_40px_rgba(0,0,0,0.6)]"
           />
         </div>
 

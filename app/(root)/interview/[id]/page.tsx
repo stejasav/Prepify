@@ -6,14 +6,14 @@ import { getCurrentUser } from "@/lib/action/auth.action";
 
 // Define the RouteParams type properly
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 const Page = async ({ params }: RouteParams) => {
-  // Now params is properly typed, so we can access id directly
-  const { id } = params;
+  // Now params is properly typed, so we can access id directly after awaiting
+  const { id } = await params;
   const user = await getCurrentUser();
   const interview = await getInterviewById(id);
 
